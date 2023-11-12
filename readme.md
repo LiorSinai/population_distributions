@@ -14,13 +14,13 @@ Population distributions:
 
 ## Set up (optional)
 
-Set up Conda Kernel
+Create Conda environment:
 
 ```bash
 conda create --name pygeo --python=3.9
 ```
 
-Install packages in the requirements.txt fiel.
+Install packages in the requirements.txt file.
 
 Set up Conda Kernel:
 ```bash
