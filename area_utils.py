@@ -1,0 +1,60 @@
+from shapely import Polygon
+import numpy as np
+import rasterio
+import rasterio.mask
+
+EARTH_RADIUS = 6378137
+
+def cylindrical_projection(latitudes, longitudes):
+    latitudes = np.array(latitudes)
+    longitudes = np.array(longitudes)
+    ys = np.sin(latitudes * np.pi / 180)
+    xs = np.array(longitudes) * np.pi / 180
+    new_poly = Polygon(zip(xs, ys))
+    return new_poly
+
+# https://stackoverflow.com/questions/4681737/how-to-calculate-the-area-of-a-polygon-on-the-earths-surface-using-python
+def calc_area(latitudes, longitudes):
+    poly_cylindrical = cylindrical_projection(latitudes, longitudes)
+    area = EARTH_RADIUS * EARTH_RADIUS * poly_cylindrical.area # metres^2
+    return area
+
+def show_stats(population_data, polygons):
+    clipped_img, transform = rasterio.mask.mask(population_data, polygons, crop=True)
+    clipped_img[clipped_img < 0] = 0                                            
+    population_count = clipped_img.sum()
+    population_max = clipped_img.max()
+    area = 0
+    for poly in polygons:
+        longs, lats = poly.exterior.coords.xy
+        area += calc_area(lats, longs) # metres^2
+    print(f'population: {population_count/1e6:.2f} million')
+    print(f'max:        {population_max:.0f} people / pixel')
+    print(f'area:       {area/1e6:.2f} km^2')
+    density = population_count / (area/1e6)
+    print(f'density:    {density:.2f} people/km^2')
+
+def get_density_per_area(population_data, polygons):
+    n = len(polygons)
+    densities = np.zeros(n)
+    population_counts = np.zeros(n)
+    areas = np.zeros(n)
+    for idx, polygon in enumerate(polygons):
+        clipped_img, transform = rasterio.mask.mask(population_data, [polygon], crop=True)
+        clipped_img[clipped_img < 0] = 0 
+        population_count = clipped_img.sum() 
+        longs, lats = polygon.exterior.coords.xy
+        area = calc_area(lats, longs) # metres^2 
+        densities[idx] = population_count / (area/1e6) # people / km^2
+        population_counts[idx] = population_count
+        areas[idx] = area
+    return densities, population_counts, areas
+
+def get_scales(shape, bounding_polygon):
+    height, width = shape
+    long_min, lat_min, long_max, lat_max = np.array(bounding_polygon.bounds) * np.pi / 180 # rads
+    long_scale = (lat_max - lat_min) * EARTH_RADIUS / height # rads * m / pixels = m/pixels
+    lat_scale_top = (long_max - long_min) * EARTH_RADIUS * np.cos(lat_max) / width # m/pixels
+    lat_scale_bottom = (long_max - long_min) * EARTH_RADIUS * np.cos(lat_min) / width # m/pixels
+    lat_scale = (lat_scale_top + lat_scale_bottom) / 2
+    return long_scale, lat_scale

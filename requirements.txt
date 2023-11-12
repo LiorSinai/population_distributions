@@ -1,0 +1,7 @@
+rasterio
+fiona
+shapely
+matplotlib
+numpy
+scikit-image
+ipykernel
