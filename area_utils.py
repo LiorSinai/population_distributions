@@ -3,13 +3,18 @@ import numpy as np
 import rasterio
 import rasterio.mask
 
-EARTH_RADIUS = 6378137
+# https://earth-info.nga.mil/index.php?dir=wgs84&action=wgs84
+MAJOR_SEMI_AXIS_WGS84 = 6_378_137 # metres
+FLATTENING_WGS84 = 1 / 298.257223563
+MINOR_SEMI_AXIS_WGS84 = MAJOR_SEMI_AXIS_WGS84 * (1 - FLATTENING_WGS84)
+EARTH_AUTHALIC_RADIUS =  6_371_007.2 # metres. Radius of a sphere with same surface area as the WSG-84 Earth spheroid.
+EARTH_RADIUS = EARTH_AUTHALIC_RADIUS
 
 def cylindrical_projection(latitudes, longitudes):
     latitudes = np.array(latitudes)
     longitudes = np.array(longitudes)
     ys = np.sin(latitudes * np.pi / 180)
-    xs = np.array(longitudes) * np.pi / 180
+    xs = longitudes * np.pi / 180
     new_poly = Polygon(zip(xs, ys))
     return new_poly
 
@@ -53,8 +58,8 @@ def get_density_per_area(population_data, polygons):
 def get_scales(shape, bounding_polygon):
     height, width = shape
     long_min, lat_min, long_max, lat_max = np.array(bounding_polygon.bounds) * np.pi / 180 # rads
-    long_scale = (lat_max - lat_min) * EARTH_RADIUS / height # rads * m / pixels = m/pixels
-    lat_scale_top = (long_max - long_min) * EARTH_RADIUS * np.cos(lat_max) / width # m/pixels
-    lat_scale_bottom = (long_max - long_min) * EARTH_RADIUS * np.cos(lat_min) / width # m/pixels
+    long_scale = (lat_max - lat_min) * EARTH_RADIUS / height # rads * metres / pixels = metres/pixels
+    lat_scale_top = (long_max - long_min) * EARTH_RADIUS * np.cos(lat_max) / width # metres/pixels
+    lat_scale_bottom = (long_max - long_min) * EARTH_RADIUS * np.cos(lat_min) / width # metres/pixels
     lat_scale = (lat_scale_top + lat_scale_bottom) / 2
     return long_scale, lat_scale
