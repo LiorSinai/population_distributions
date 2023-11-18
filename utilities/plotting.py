@@ -33,7 +33,7 @@ def get_projection_yticks(transform, width, height, step_size=None):
 
 def auto_step(x_min, x_max, num_steps=10):
     step_size = abs(x_min - x_max) / num_steps
-    step10 = 10 ** np.ceil(np.log10(step_size))
+    step10 = 10 ** np.round(np.log10(step_size))
     return step10
 
 def get_start(x_min, x_max, step_size):
