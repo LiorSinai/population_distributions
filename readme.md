@@ -55,13 +55,9 @@ Set up Conda Kernel:
 ```bash
 conda activate pygeo
 python -m ipykernel install --user --name=pygeo
-conda activate pygeo
-jupyter notebook
 ```
 
-
 Use with Jupyter Notebook:
-
 ```bash
 conda activate pygeo
 jupyter notebook
