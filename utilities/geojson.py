@@ -1,7 +1,8 @@
 from shapely import Polygon, MultiPolygon
 import numpy as np
+from typing import List
 
-def filter_features(shape_data, prop_name, prop_val):
+def filter_features(shape_data: List[dict], prop_name: str, prop_val):
     features = []
     for feature in shape_data['features']:
         if feature['properties'][prop_name] == prop_val:
@@ -9,7 +10,7 @@ def filter_features(shape_data, prop_name, prop_val):
     return features
 
 
-def filter_features_by_list(shape_data, prop_name, prop_list):
+def filter_features_by_list(shape_data: List[dict], prop_name: str, prop_list: List):
     features = []
     for feature in shape_data['features']:
         if feature['properties'][prop_name] in prop_list:
@@ -17,7 +18,7 @@ def filter_features_by_list(shape_data, prop_name, prop_list):
     return features
 
 
-def convert_dict_to_shapely(geometry: dict, keep_top = -1):
+def convert_dict_to_shapely(geometry: dict, keep_top: int = -1):
     geometry_type = geometry['type']
     if geometry_type == 'Polygon':
         coords = geometry['coordinates']
@@ -44,7 +45,7 @@ def convert_dict_to_shapely(geometry: dict, keep_top = -1):
     return polygon
 
 
-def get_polygons(features, identifier='shapeName', keep_top=-1):
+def get_polygons(features, identifier='shapeName', keep_top: int =-1):
     shapes = {}
     for idx, feat in enumerate(features):
         id = feat['properties'][identifier]
