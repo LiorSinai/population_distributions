@@ -34,17 +34,19 @@ def calc_area(
 
 def show_stats(
         population_data: rasterio.io.DatasetReader,
-        polygons: List[Polygon],
+        geometries: List[Union[Polygon, MultiPolygon]],
         radius: float = EARTH_RADIUS
     ):
-    clipped_img, transform = rasterio.mask.mask(population_data, polygons, crop=True)
+    clipped_img, transform = rasterio.mask.mask(population_data, geometries, crop=True)
     clipped_img[clipped_img < 0] = 0                                            
     population_count = clipped_img.sum()
     population_max = clipped_img.max()
     area = 0
-    for poly in polygons:
-        longs, lats = poly.exterior.coords.xy
-        area += calc_area(lats, longs, radius=radius) # metres^2
+    for geometry in geometries:
+        polygons = geometry.geoms if isinstance(geometry, MultiPolygon) else [geometry]
+        for polygon in polygons:
+            longs, lats = polygon.exterior.coords.xy
+            area += calc_area(lats, longs, radius=radius) # metres^2
     print(f'population: {population_count/1e6:.2f} million')
     print(f'max:        {population_max:.0f} people / pixel')
     print(f'area:       {area/1e6:.2f} km^2')
