@@ -1,4 +1,4 @@
-from shapely import Polygon, MultiPolygon
+from shapely import Polygon, MultiPolygon, Point
 import numpy as np
 from typing import List
 
@@ -16,6 +16,22 @@ def filter_features_by_list(shape_data: List[dict], prop_name: str, prop_list: L
         if feature['properties'][prop_name] in prop_list:
             features.append(feature)
     return features
+
+
+def filter_features_by_bounds(shape_data: List[dict], boundary: Polygon):
+    valid_features =  []
+    for idx, feature in enumerate(shape_data['features']):
+        geometry = feature['geometry']
+        if geometry['type'] == 'Polygon':
+            coordinates = geometry['coordinates'][0]
+        elif geometry['type'] == 'MultiPolygon':
+            coordinates = sum((polygon[0] for polygon in geometry['coordinates']), [])
+        else:
+            type_ = geometry['type']
+            raise Exception(f"Geometry f type {type_} is not supported")
+        if all(boundary.contains(Point(*point)) for point in coordinates):
+            valid_features.append(feature)
+    return valid_features
 
 
 def convert_dict_to_shapely(geometry: dict, keep_top: int = -1):
