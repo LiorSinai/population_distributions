@@ -1,18 +1,21 @@
 ## Population distributions and densities
 
-Population densities:
-
-<p align="center">
-  <img src="images/group_densities.png"  
-  alt="annotated population densities of several cities" style="padding:5px"/>
-</p>
 
 Population distributions:
 
 <p align="center">
-  <img src="images/london_ny_distribution.png" 
-  alt="population distribution of New York and London" style="padding:5px"/>
+  <img src="images/group_distribution.png"  
+  alt="population distributions of several cities" style="padding:5px"/>
 </p>
+
+
+Population densities:
+
+<p align="center">
+  <img src="images/group_densities.png"  
+  alt="population densities of several cities" style="padding:5px"/>
+</p>
+
 
 ## Projections
 
