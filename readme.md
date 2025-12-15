@@ -3,7 +3,7 @@
 Population densities:
 
 <p align="center">
-  <img src="images/all_densities_annotated.png"  
+  <img src="images/group_densities.png"  
   alt="annotated population densities of several cities" style="padding:5px"/>
 </p>
 
@@ -55,13 +55,9 @@ Set up Conda Kernel:
 ```bash
 conda activate pygeo
 python -m ipykernel install --user --name=pygeo
-conda activate pygeo
-jupyter notebook
 ```
 
-
 Use with Jupyter Notebook:
-
 ```bash
 conda activate pygeo
 jupyter notebook
@@ -69,10 +65,10 @@ jupyter notebook
 # Data Sources
 
 Country and administrative boundaries from https://www.geoboundaries.org/. 
-Runfola, D. et al. (2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. https://doi.org/10.1371/journal.pone.0231866
+> Runfola, D. et al. (2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. https://doi.org/10.1371/journal.pone.0231866
 
-Country populations from https://hub.worldpop.org/.
-WorldPop (www.worldpop.org - School of Geography and Environmental Science, University of Southampton;
+Country populations from https://hub.worldpop.org/geodata/listing?id=78
+> WorldPop (www.worldpop.org - School of Geography and Environmental Science, University of Southampton;
 Department of Geography and Geosciences, University of Louisville; Departement de Geographie, Universite
 de Namur) and Center for International Earth Science Information Network (CIESIN), Columbia University
 (2018). Global High Resolution Population Denominators Project - Funded by The Bill and Melinda Gates
